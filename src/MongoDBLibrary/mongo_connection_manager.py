@@ -1,3 +1,5 @@
+from __future__ import print_function
+from builtins import object
 from robot.libraries.BuiltIn import BuiltIn
 
 
@@ -37,9 +39,9 @@ class MongoConnectionManager(object):
         #print "slave_okay is         [ %s ]" % dbSlaveOkay
         #print "document_class is     [ %s ]" % dbDocClass
         #print "tz_aware is           [ %s ]" % dbTZAware
-        print "| Connect To MondoDB | dbHost | dbPort | dbMaxPoolSize | dbNetworktimeout | dbDocClass | dbTZAware |"
-        print "| Connect To MondoDB | %s | %s | %s | %s | %s | %s |" % (dbHost, dbPort, dbMaxPoolSize, dbNetworkTimeout,
-                                                                        dbDocClass, dbTZAware)
+        print("| Connect To MondoDB | dbHost | dbPort | dbMaxPoolSize | dbNetworktimeout | dbDocClass | dbTZAware |")
+        print("| Connect To MondoDB | %s | %s | %s | %s | %s | %s |" % (dbHost, dbPort, dbMaxPoolSize, dbNetworkTimeout,
+                                                                        dbDocClass, dbTZAware))
 
         self._dbconnection = db_api_2.MongoClient(host=dbHost, port=dbPort, socketTimeoutMS=dbNetworkTimeout,
                                          document_class=dbDocClass, tz_aware=dbTZAware,
@@ -52,5 +54,5 @@ class MongoConnectionManager(object):
         For example:
         | Disconnect From MongoDB | # disconnects from current connection to the MongoDB server | 
         """
-        print "| Disconnect From MongoDB |"
+        print("| Disconnect From MongoDB |")
         self._dbconnection.close()
