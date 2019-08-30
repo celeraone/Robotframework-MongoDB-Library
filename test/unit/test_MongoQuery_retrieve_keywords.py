@@ -83,7 +83,7 @@ class TestMongoDBLibrary(unittest.TestCase):
         expected = self.mongo_find_from_collection()
         self.assertEqual(data, expected)
 
-    def test_retrieve_all_mongodb_recorYds_when_one_document(self):
+    def test_retrieve_all_mongodb_records_when_one_document(self):
         self.mongo_create_db()
         self.mongo_inser_data(data2)
 
