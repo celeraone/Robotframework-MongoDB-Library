@@ -155,11 +155,9 @@ class TestMongoDBLibrary(unittest.TestCase):
                                                               dbCollName=test_collection_name, recordJSON='{}',
                                                               fields=field, return__id=False)
         a.disconnect_from_mongodb()
-
-        # str() required to handle unicodes strings in python 2 and 3
-        expected = [str([(u'address', {u'postalCode': 10021, u'city': u'New York'})]),
-                    str([(u'address', {u'city': u'New York', u'postalCode': 10021})])]
-        self.assertTrue(data in expected, msg="{} not found in {}".format(data, expected))
+        data = self.cleanup_and_sort(data)
+        expected = [(u'address', [(u'city', u'New York'), (u'postalCode', 10021)])]
+        self.assertIn(expected, data)
 
     def test_retrieve_mongodb_records_with_desired_fields_when_multiple_documents_in_db(self):
         self.mongo_create_db()
@@ -174,16 +172,11 @@ class TestMongoDBLibrary(unittest.TestCase):
                                                               fields=field, return__id=False)
         a.disconnect_from_mongodb()
 
-        # str() required to handle unicodes strings in python 2 and 3
-        expected = [str([(u'address', {u'postalCode': 10021, u'city': u'New York'})]) + str(
-                        [(u'address', {u'postalCode': 10021, u'city': u'Metropolis'})]),
-                    str([(u'address', {u'postalCode': 10021, u'city': u'New York'})]) + str(
-                        [(u'address', {u'city': u'Metropolis', u'postalCode': 10021})]),
-                    str([(u'address', {u'city': u'New York', u'postalCode': 10021})]) + str(
-                        [(u'address', {u'postalCode': 10021, u'city': u'Metropolis'})]),
-                    str([(u'address', {u'city': u'New York', u'postalCode': 10021})]) + str(
-                        [(u'address', {u'city': u'Metropolis', u'postalCode': 10021})]), ]
-        self.assertTrue(data in expected, msg="{} not found in {}".format(data, expected))
+        data = self.cleanup_and_sort(data)
+        expected_1 = [(u'address', [(u'city', u'New York'), (u'postalCode', 10021)])]
+        expected_2 = [(u'address', [(u'city', u'Metropolis'), (u'postalCode', 10021)])]
+        self.assertIn(expected_1, data)
+        self.assertIn(expected_2, data)
 
     def test_retrieve_mongodb_records_with_desired_fields_when_fields_is_empty(self):
         self.mongo_create_db()
@@ -197,24 +190,22 @@ class TestMongoDBLibrary(unittest.TestCase):
                                                               fields='', return__id=False)
         a.disconnect_from_mongodb()
 
-        data = data.replace('][', '],[')
-        data = '[' + data + ']'
+        data = self.cleanup_and_sort(data)
+        expected1 = [(u'address', [(u'city', u'New York'), (u'postalCode', 10021), (u'state', u'NY'), (u'streetAddress', u'21 2nd Street')]),
+                      (u'age', 25),
+                      (u'firstName', u'John'),
+                      (u'lastName', u'Smith'),
+                      (u'phoneNumbers', [[(u'number', u'212 555-1234'), (u'type', u'home')],
+                                         [(u'number', u'646 555-4567'), (u'type', u'fax')]])]
+        expected2 = [(u'address', [(u'city', u'Metropolis'), (u'postalCode', 10021), (u'state', u'NA'), (u'streetAddress', u'21 2nd Street')]),
+                     (u'age', 81),
+                     (u'firstName', u'Clark'),
+                     (u'lastName', u'Kent'),
+                     (u'phoneNumbers', [[(u'number', u'919 555-1234'), (u'type', u'home')],
+                                        [(u'number', u'919 555-4567'), (u'type', u'fax')]])]
 
-        data = eval(data)
-        data = [dict(x) for x in data]
-        for element in data:
-            del element['_id']
-            element['address'] = sorted(element['address'].items())
-            element['phoneNumbers'] = sorted([sorted(e.items()) for e in element['phoneNumbers']])
-
-        for i in range(0, len(data)):
-            data[i] = sorted(data[i].items())
-
-        expected1 = str([(u'address', [(u'city', u'New York'), (u'postalCode', 10021), (u'state', u'NY'), (u'streetAddress', u'21 2nd Street')]), (u'age', 25), (u'firstName', u'John'), (u'lastName', u'Smith'), (u'phoneNumbers', [[(u'number', u'212 555-1234'), (u'type', u'home')], [(u'number', u'646 555-4567'), (u'type', u'fax')]])])
-        expected2 = str([(u'address', [(u'city', u'Metropolis'), (u'postalCode', 10021), (u'state', u'NA'), (u'streetAddress', u'21 2nd Street')]), (u'age', 81), (u'firstName', u'Clark'), (u'lastName', u'Kent'), (u'phoneNumbers', [[(u'number', u'919 555-1234'), (u'type', u'home')], [(u'number', u'919 555-4567'), (u'type', u'fax')]])])
-
-        self.assertIn(expected1, "{}".format(data))
-        self.assertIn(expected2, "{}".format(data))
+        self.assertIn(expected1, data)
+        self.assertIn(expected2, data)
 
     def test_retrieve_mongodb_records_with_desired_fields__id_is_returned(self):
         self.mongo_create_db()
@@ -245,20 +236,10 @@ class TestMongoDBLibrary(unittest.TestCase):
                                                               fields=field, return__id=False)
         a.disconnect_from_mongodb()
 
-        data = data.replace('][', '],[')
-        data = '[' + data + ']'
+        data = self.cleanup_and_sort(data)
 
-        data = eval(data)
-        data = [dict(x) for x in data]
-        for element in data:
-            element['address'] = sorted(element['address'].items())
-
-        for i in range(0, len(data)):
-            data[i] = sorted(data[i].items())
-
-        # str() required to handle unicodes strings in python 2 and 3
-        expected = str([(u'address', [(u'city', u'New York'), (u'postalCode', 10021)])])
-        self.assertIn(expected, "{}".format(data))
+        expected = [(u'address', [(u'city', u'New York'), (u'postalCode', 10021)])]
+        self.assertIn(expected, data)
 
     def test_retrieve_mongodb_records_with_desired_fields_when_return__id_is_not_boolean(self):
         self.mongo_create_db()
@@ -273,21 +254,11 @@ class TestMongoDBLibrary(unittest.TestCase):
                                                               fields=field, return__id='foobar')
         a.disconnect_from_mongodb()
 
-        data = data.replace('][', '],[')
-        data = '[' + data + ']'
+        data = self.cleanup_and_sort(data)
 
-        data = eval(data)
-        data = [dict(x) for x in data]
-        for element in data:
-            del element['_id']
-            element['address'] = sorted(element['address'].items())
+        expected = [(u'address', [(u'city', u'New York'), (u'postalCode', 10021)])]
 
-        for i in range(0, len(data)):
-            data[i] = sorted(data[i].items())
-
-        expected = str([(u'address', [(u'city', u'New York'), (u'postalCode', 10021)])])
-
-        self.assertIn(expected, "{}".format(data))
+        self.assertIn(expected, data)
 
     def tearDown(self):
         # Terminate Mongodb process
@@ -296,6 +267,22 @@ class TestMongoDBLibrary(unittest.TestCase):
             self._process.wait()
             self._process = None
             shutil.rmtree(self._tmpdir, ignore_errors=True)
+
+    def cleanup_and_sort(self, data):
+        data = data.replace('][', '],[')
+        data = '[' + data + ']'
+        data = eval(data)
+        data = [dict(x) for x in data]
+
+        for element in data:
+            if '_id' in element:
+                del element['_id']
+            element['address'] = sorted(element['address'].items())
+            if 'phoneNumbers' in element:
+                element['phoneNumbers'] = sorted([sorted(e.items()) for e in element['phoneNumbers']])
+        for i in range(0, len(data)):
+            data[i] = sorted(data[i].items())
+        return data
 
     def mongo_create_db(self, db=test_database_name, collection=test_collection_name):
         test_db = self._conn[db]
