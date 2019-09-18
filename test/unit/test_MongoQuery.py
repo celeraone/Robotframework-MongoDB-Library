@@ -72,8 +72,8 @@ class TestMongoDBLibrary(unittest.TestCase):
 
         self.mongo_drop_database()
 
-        expected = ['test_database', 'local']
-        self.assertEqual(db, expected)
+        expected = ['admin', 'test_database', 'local']
+        self.assertEqual(set(db), set(expected))
 
     def test_get_mongodb_collections(self):
         self.mongo_create_db()
@@ -86,7 +86,7 @@ class TestMongoDBLibrary(unittest.TestCase):
 
         self.mongo_drop_database()
 
-        expected = ['system.indexes', 'test_collection']
+        expected = ['test_collection']
         self.assertEqual(collection_names, expected)
 
     def test_drop_mongodb_database(self):
@@ -99,8 +99,8 @@ class TestMongoDBLibrary(unittest.TestCase):
         a.disconnect_from_mongodb()
 
         database_names = self.mongo_database_names()
-        expected = ['local']
-        self.assertEqual(database_names, expected)
+        expected = ['admin', 'local']
+        self.assertEqual(set(database_names), set(expected))
 
     def tearDown(self):
         # Terminate Mongodb process

@@ -6,21 +6,25 @@
 from distutils.core import setup
 
 import sys, os
-sys.path.insert(0, os.path.join('src','MongoDBLibrary'))
+
+sys.path.insert(0, os.path.join('src', 'MongoDBLibrary'))
 
 from version import VERSION
 
+
 def main():
-    setup(name         = 'robotframework-mongodblibrary',
-          version      = VERSION,
-          description  = 'Mongo Database utility library for Robot Framework',
-          author       = 'Jerry Schneider',
-          author_email = 'jerry@cyverse.org',
-          url          = 'https://github.com/iPlantCollaborativeOpenSource/Robotframework-MongoDB-Library',
-          package_dir  = { '' : 'src'},
-          packages     = ['MongoDBLibrary']
+    setup(name='robotframework-mongodblibrary',
+          version=VERSION,
+          description='Mongo Database utility library for Robot Framework',
+          author='Jerry Schneider',
+          author_email='jerry@cyverse.org',
+          url='https://github.com/iPlantCollaborativeOpenSource/Robotframework-MongoDB-Library',
+          package_dir={'': 'src'},
+          install_requires=['future',
+                            'pymongo',
+                            'robotframework'],
+          packages=['MongoDBLibrary'],
           )
-        
 
 if __name__ == "__main__":
     main()
