@@ -280,8 +280,8 @@ class TestMongoDBLibrary(unittest.TestCase):
             element['address'] = sorted(element['address'].items())
             if 'phoneNumbers' in element:
                 element['phoneNumbers'] = sorted([sorted(e.items()) for e in element['phoneNumbers']])
-        for i in range(0, len(data)):
-            data[i] = sorted(data[i].items())
+        for i, element in enumerate(data):
+            data[i] = sorted(element.items())
         return data
 
     def mongo_create_db(self, db=test_database_name, collection=test_collection_name):
