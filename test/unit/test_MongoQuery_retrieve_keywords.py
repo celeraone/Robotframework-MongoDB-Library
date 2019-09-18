@@ -301,7 +301,6 @@ class TestMongoDBLibrary(unittest.TestCase):
                                    projection=[]):
         data = ''
         for item in self._collection.find(dict(json.loads(record))):
-            print(item)
             data = '%s%s' % (data, list(item.items()))
         return data
 

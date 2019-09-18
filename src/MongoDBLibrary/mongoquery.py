@@ -43,7 +43,7 @@ class MongoQuery(object):
         allCollections = db.collection_names()
         print("| @{allCollections} | Get MongoDB Collections | %s |" % dbName)
         return allCollections
-    #BEING USED
+
     def drop_mongodb_database(self, dbDelName):
         """
         Deletes the database passed in from the MongoDB server if it exists.
@@ -61,7 +61,6 @@ class MongoQuery(object):
         except TypeError:
             self._builtin.fail("Connection failed, please make sure you have run 'Connect To Mongodb' first.")
 
-    # BEING USED
     def drop_mongodb_collection(self, dbName, dbCollName):
         """
         Deletes the named collection passed in from the database named.
@@ -80,7 +79,6 @@ class MongoQuery(object):
         db.drop_collection('%s' % dbCollName)
         print("| Drop MongoDB Collection | %s | %s |" % (dbName, dbCollName))
 
-    # BEING USED
     def validate_mongodb_collection(self, dbName, dbCollName):
         """
         Returns a string of validation info. Raises CollectionInvalid if 
@@ -119,7 +117,6 @@ class MongoQuery(object):
         print("| ${allResults} | Get MongoDB Collection Count | %s | %s |" % (dbName, dbCollName))
         return count
 
-    # BEING USED
     def save_mongodb_records(self, dbName, dbCollName, recordJSON):
         """
         If to_save already has an "_id" then an update() (upsert) operation is 
@@ -179,7 +176,7 @@ class MongoQuery(object):
         print("| ${allResults} | Update Many MongoDB Records | %s | %s | %s | %s |" % (
             dbName, dbCollName, query_json, update_json))
         return allResults.modified_count
-    # BEING USED
+
     def retrieve_all_mongodb_records(self, dbName, dbCollName, returnDocuments=False):
         """
         Retrieve ALL of the records in a give MongoDB database collection.
@@ -193,7 +190,6 @@ class MongoQuery(object):
         """
         return self._retrieve_mongodb_records(dbName, dbCollName, '{}', returnDocuments=returnDocuments)
 
-    # BEING USED
     def retrieve_some_mongodb_records(self, dbName, dbCollName, recordJSON, returnDocuments=False):
         """
         Retrieve some of the records from a given MongoDB database collection
@@ -335,7 +331,7 @@ class MongoQuery(object):
             for d in results:
                 response = '%s%s' % (response, list(d.items()))
             return response
-    #BEING USED
+
     def remove_mongodb_records(self, dbName, dbCollName, recordJSON):
         """
         Remove some of the records from a given MongoDB database collection
